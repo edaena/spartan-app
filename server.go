@@ -35,3 +35,8 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
+
+//Sum : Simple summing function.
+func Sum(x int, y int) int {
+	return x + y
+}
