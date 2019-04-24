@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -23,6 +25,7 @@ func health(w http.ResponseWriter, r *http.Request) {
 }
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
+	recordMetrics()
 	fmt.Fprintf(w, "%s\n", appVersion)
 }
 
@@ -40,3 +43,19 @@ func main() {
 func Sum(x int, y int) int {
 	return x + y
 }
+
+func recordMetrics() {
+	go func() {
+		for {
+			opsProcessed.Inc()
+			time.Sleep(2 * time.Second)
+		}
+	}()
+}
+
+var (
+	opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
+		Name: "spartan_app_processed_ops_total",
+		Help: "The total number of processed events",
+	})
+)
