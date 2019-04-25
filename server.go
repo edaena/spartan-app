@@ -32,6 +32,7 @@ func getVersion(w http.ResponseWriter, r *http.Request) {
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 	instanceNum = rand.Intn(1000)
+	recordError()
 	http.HandleFunc("/", getFrontpage)
 	http.HandleFunc("/health", health)
 	http.HandleFunc("/version", getVersion)
@@ -53,9 +54,44 @@ func recordMetrics() {
 	}()
 }
 
+//Quick and dirty simulation error state
+func recordError() {
+	go func() {
+		var divisor = 17 //Higher odd number means potential longer time to trigger error
+		var errorFound = false
+		var errorIterations = 5
+		for {
+			var randomNumberDividend = rand.Intn(1000)
+			if errorFound && errorIterations > 0 {
+				errorIterations--
+				opsErrorState.Set(1)
+				fmt.Printf("Set ErrorState to %v\n", 1)
+			} else if errorFound && errorIterations == 0 {
+				errorIterations = 5
+				errorFound = false
+				opsErrorState.Set(0)
+				fmt.Printf("Set ErrorState to %v\n", 0)
+			} else if randomNumberDividend%divisor == 0 {
+				opsErrorState.Set(1)
+				errorFound = true
+				fmt.Printf("Set ErrorState to %v\n", 1)
+			} else {
+				opsErrorState.Set(0)
+				fmt.Printf("Set ErrorState to %v\n", 0)
+			}
+			time.Sleep(5 * time.Second)
+		}
+	}()
+}
+
 var (
 	opsProcessed = promauto.NewCounter(prometheus.CounterOpts{
 		Name: "spartan_app_processed_ops_total",
 		Help: "The total number of processed events",
+	})
+	//A simple numeric value that can go up and down and exposes a current state of the application.
+	opsErrorState = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "spartan_app_error_state",
+		Help: "Counter that counts the number of successes",
 	})
 )
