@@ -9,11 +9,11 @@ trigger:
 pool:
   vmImage: 'Ubuntu-16.04'
 
-# variables:
-#   GOBIN:  '$(GOPATH)/bin' # Go binaries path
-#   GOROOT: '/usr/local/go1.11' # Go installation path
-#   GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-#   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+variables:
+  GOBIN:  '$(GOPATH)/bin' # Go binaries path
+  GOROOT: '/usr/local/go1.11' # Go installation path
+  GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+  modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
 
 steps:
 # - script: |
@@ -28,14 +28,21 @@ steps:
 #   displayName: 'Set up the Go workspace'
 
 - script: |
-    go version
-
     # Login to Azure 
     echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
     az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
+  workingDirectory: '$(modulePath)'
+  displayName: 'Azure login'
+
+- script: |
+    # go version
+
+    # # Login to Azure 
+    # echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
+    # az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
 
     # Use ACR build task to build and push
     echo "az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) ."
     az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) .
   workingDirectory: '$(modulePath)'
-  displayName: 'Get dependencies, then build, then publish to ACR'
+  displayName: 'Azure login, dependencies, then build, then publish to ACR'
