@@ -16,23 +16,23 @@ variables:
   modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
 
 steps:
-# - script: |
-#     mkdir -p '$(GOBIN)'
-#     mkdir -p '$(GOPATH)/pkg'
-#     mkdir -p '$(modulePath)'
-#     shopt -s extglob
-#     shopt -s dotglob
-#     mv !(gopath) '$(modulePath)'
-#     echo '##vso[task.prependpath]$(GOBIN)'
-#     echo '##vso[task.prependpath]$(GOROOT)/bin'
-#   displayName: 'Set up the Go workspace'
+- script: |
+    mkdir -p '$(GOBIN)'
+    mkdir -p '$(GOPATH)/pkg'
+    mkdir -p '$(modulePath)'
+    shopt -s extglob
+    shopt -s dotglob
+    mv !(gopath) '$(modulePath)'
+    echo '##vso[task.prependpath]$(GOBIN)'
+    echo '##vso[task.prependpath]$(GOROOT)/bin'
+  displayName: 'Set up the Go workspace'
 
 - script: |
     # Login to Azure 
     echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
     az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
   workingDirectory: '$(modulePath)'
-  displayName: 'Azure login'
+  displayName: 'Azure Login'
 
 - script: |
     # go version
@@ -45,4 +45,4 @@ steps:
     echo "az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) ."
     az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) .
   workingDirectory: '$(modulePath)'
-  displayName: 'Azure login, dependencies, then build, then publish to ACR'
+  displayName: 'ACR Build and Publish'
