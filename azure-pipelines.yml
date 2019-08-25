@@ -47,7 +47,7 @@ stages:
       workingDirectory: '$(modulePath)'
       displayName: 'ACR Build and Publish'
 
-- stage: test
+- stage: hld-update
   dependsOn: build
   jobs:
   - job: update_image_tag
@@ -135,7 +135,7 @@ stages:
         git config user.name "Automated Account"
 
         echo "GIT COMMIT"
-        git commit -m "Updating image tag to $(Build.BuildId) for common environment"
+        git commit -m "Updating image tag to $(Build.BuildNumber) for common environment"
 
         echo "GIT PUSH"
         git push https://b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git
