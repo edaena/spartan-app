@@ -47,7 +47,7 @@ stages:
       workingDirectory: '$(modulePath)'
       displayName: 'ACR Build and Publish'
 
-- stage: hld-update
+- stage: hld_update
   dependsOn: build
   jobs:
   - job: update_image_tag
