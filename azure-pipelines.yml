@@ -123,7 +123,7 @@ stages:
         }
         pwd
         git_connect
-        ../fab/fab set --subcomponent spartan-service image.tag=$(Build.BuildId)
+        ../fab/fab set --subcomponent spartan-service image.tag=$(Build.BuildNumber)
 
         echo "GIT STATUS"
         git status
