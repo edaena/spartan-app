@@ -6,6 +6,9 @@
 trigger:
 - master
 
+# Don't run against PRs
+pr: none
+
 stages:
 - stage: build
   jobs:
@@ -49,6 +52,7 @@ stages:
 
 - stage: hld_update
   dependsOn: build
+  condition: succeeded('build')
   jobs:
   - job: update_image_tag
     pool:
@@ -141,15 +145,16 @@ stages:
         git push https://b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git
 
 
-    
-# - stage: staging
-#   dependsOn: test
-#   jobs:
-#   - job: deploy_staging
-#     pool:
-#       vmImage: 'Ubuntu 16.04'
-#     steps:
-#     - script: echo Staging
+- stage: testing
+  dependsOn: hld_update
+  # Won't run 
+  condition: and(succeeded(), eq('foo', 'bar'))  
+  jobs:
+  - job: deploy_staging
+    pool:
+      vmImage: 'Ubuntu 16.04'
+    steps:
+    - script: echo Staging
 
 # - stage: prod
 #   dependsOn: staging
