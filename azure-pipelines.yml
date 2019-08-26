@@ -10,6 +10,10 @@ trigger:
 # Don't run against PRs
 pr: none
 
+variables:
+- name: APP_NAME
+  value: go-docker-k8s-demo
+
 stages:
 - stage: build
   jobs:
@@ -137,7 +141,7 @@ stages:
         pwd
         git_connect
         git checkout -b "DEPLOY/$(Build.BuildNumber)"
-        ../fab/fab set --subcomponent spartan-service image.tag=$(Build.BuildNumber)
+        ../fab/fab set --subcomponent $(Build.Repository.Name) image.tag=$(Build.BuildNumber)
 
         echo "GIT STATUS"
         git status
@@ -160,7 +164,7 @@ stages:
         cd fabrikate-spartan-cluster
         export GITHUB_TOKEN=b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd
         echo "Attempting to PR"
-        ../hub-linux-amd64-2.12.3/bin/hub pull-request -p -m "This is automated"
+        ../hub-linux-amd64-2.12.3/bin/hub pull-request -p -m "Automated PR for $(Build.Repository.Name)"
 
 
 - stage: testing
