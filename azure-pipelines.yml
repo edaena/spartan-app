@@ -158,7 +158,7 @@ stages:
         wget https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz
         tar -xvf hub-linux-amd64-2.12.3.tgz
         cd fabrikate-spartan-cluster
-        SET GITHUB_TOKEN=b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd
+        export GITHUB_TOKEN=b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd
         echo "Attempting to PR"
         ../hub-linux-amd64-2.12.3/bin/hub pull-request -m "This is automated"
 
