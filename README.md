@@ -1,6 +1,6 @@
 # spartan-app
 
-
+small change
 $ docker build .
 
 or docker build -t andrebriggs/spartan-app:latest . with tag
