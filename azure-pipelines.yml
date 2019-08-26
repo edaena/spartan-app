@@ -157,11 +157,10 @@ stages:
     steps:
     - script: |
         echo $(Build.SourceBranchName)
-        sudo snap install hub --classic
-        ls -la
-        cd ..
-        ls -la
-        which hub
+        ls -la ..
+        curl https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz
+        tar -xvzf ../hub-linux-amd64-2.12.3.tgz
+        ls -la ../hub-linux-amd64-2.12.3
 
 # - stage: prod
 #   dependsOn: staging
