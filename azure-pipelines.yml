@@ -157,10 +157,11 @@ stages:
     steps:
     - script: |
         echo $(Build.SourceBranchName)
-        ls -la ..
-        curl https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz --output ../hub-linux-amd64-2.12.3.tgz
-        tar -xvf ../hub-linux-amd64-2.12.3.tgz -C ../
-        ls -la ../
+        ls -la
+        wget https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz
+        ls -la
+        tar -xvf hub-linux-amd64-2.12.3.tgz
+        ls -la
 
 # - stage: prod
 #   dependsOn: staging
