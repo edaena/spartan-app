@@ -1,6 +1,7 @@
 # spartan-app
 
-Wednesday
+Changes for September release
+
 $ docker build .
 
 or docker build -t andrebriggs/spartan-app:latest . with tag
