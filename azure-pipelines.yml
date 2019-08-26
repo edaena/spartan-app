@@ -127,6 +127,7 @@ stages:
         }
         pwd
         git_connect
+        git checkout -b "DEPLOY/$(Build.BuildNumber)"
         ../fab/fab set --subcomponent spartan-service image.tag=$(Build.BuildNumber)
 
         echo "GIT STATUS"
@@ -142,19 +143,20 @@ stages:
         git commit -m "Updating image tag to $(Build.BuildNumber) for common environment"
 
         echo "GIT PUSH"
-        git push https://b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git
+        git push origin "DEPLOY/$(Build.BuildNumber)" https://b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git
 
 
 - stage: testing
   dependsOn: hld_update
   # Won't run 
-  condition: and(succeeded(), eq('foo', 'bar'))  
+  condition: and(succeeded(), eq('foo', 'foo'))  
   jobs:
   - job: deploy_staging
     pool:
       vmImage: 'Ubuntu 16.04'
     steps:
-    - script: echo Staging
+    - script: |
+        echo $(Build.SourceBranchName)
 
 # - stage: prod
 #   dependsOn: staging
