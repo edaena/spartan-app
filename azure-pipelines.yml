@@ -52,7 +52,7 @@ stages:
 
 - stage: hld_update
   dependsOn: build
-  condition: succeeded('build')
+  condition: and(succeeded('build'), startsWith(variables['Build.SourceBranchName'], 'DEPLOY/'))
   jobs:
   - job: update_image_tag
     pool:
@@ -145,11 +145,17 @@ stages:
         echo "GIT PUSH"
         git push https://b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git
 
+        cd ..
+        wget https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz
+        tar -xvf hub-linux-amd64-2.12.3.tgz
+        cd fabrikate-spartan-cluster
+        ../hub-linux-amd64-2.12.3/bin/hub pull-request -m "This is automated"
+
 
 - stage: testing
   dependsOn: hld_update
   # Won't run 
-  condition: and(succeeded(), eq('foo', 'foo'))  
+  condition: and(succeeded(), eq('foo', 'bar'))  
   jobs:
   - job: deploy_staging
     pool:
@@ -165,7 +171,7 @@ stages:
         ls -la
         tar -xvf hub-linux-amd64-2.12.3.tgz
         ls -la
-        ./hub-linux-amd64-2.12.3/bin/hub version
+        ./hub-linux-amd64-2.12.3/bin/hub pull-request -m "This is automated"
 
 
 # - stage: prod
