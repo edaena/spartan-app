@@ -1,6 +1,6 @@
 # spartan-app
 
-Changes for September release
+Changes for September release now in DEPLOY
 
 $ docker build .
 
