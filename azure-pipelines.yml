@@ -5,6 +5,7 @@
 
 trigger:
 - master
+- DEPLOY/*
 
 # Don't run against PRs
 pr: none
