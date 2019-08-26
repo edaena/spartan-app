@@ -22,8 +22,11 @@ stages:
       modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
     steps:
     - script: | 
-        echo "DEBUG  STUFF"
-        echo $(Build.SourceBranchName)
+        echo "****DEBUG STUFF****"
+        echo "Build.SourceBranch: $(Build.SourceBranch)"
+        echo "Build.SourceBranchName: $(Build.SourceBranchName)"
+        echo "System.PullRequest.SourceRepositoryURI: $(System.PullRequest.SourceRepositoryURI)"
+        echo "System.PullRequest.SourceBranch: $(System.PullRequest.SourceBranch)"
         pwd
         ls -la 
     - script: |
