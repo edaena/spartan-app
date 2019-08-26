@@ -157,6 +157,8 @@ stages:
     steps:
     - script: |
         echo $(Build.SourceBranchName)
+        snap install hub --classic
+        hub version
 
 # - stage: prod
 #   dependsOn: staging
