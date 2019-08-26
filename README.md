@@ -1,6 +1,6 @@
 # spartan-app
 
-
+Monday
 $ docker build .
 
 or docker build -t andrebriggs/spartan-app:latest . with tag
