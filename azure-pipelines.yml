@@ -159,7 +159,9 @@ stages:
         echo $(Build.SourceBranchName)
         sudo snap install hub --classic
         ls -la
-        sudo hub version
+        cd ..
+        ls -la
+        which hub
 
 # - stage: prod
 #   dependsOn: staging
