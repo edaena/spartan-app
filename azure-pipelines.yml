@@ -143,7 +143,7 @@ stages:
         git commit -m "Updating image tag to $(Build.BuildNumber) for common environment"
 
         echo "GIT PUSH"
-        git push origin "DEPLOY/$(Build.BuildNumber)" https://b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git
+        git push https://b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git origin "DEPLOY/$(Build.BuildNumber)"
 
 
 - stage: testing
