@@ -21,6 +21,11 @@ stages:
       GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
       modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
     steps:
+    - script: | 
+        echo "DEBUG  STUFF"
+        echo $(Build.SourceBranchName)
+        pwd
+        ls -la 
     - script: |
         mkdir -p '$(GOBIN)'
         mkdir -p '$(GOPATH)/pkg'
@@ -52,7 +57,7 @@ stages:
 
 - stage: hld_update
   dependsOn: build
-  condition: and(succeeded('build'), startsWith(variables['Build.SourceBranchName'], 'DEPLOY/'))
+  condition: and(succeeded('build'), startsWith(variables['Build.SourceBranchName'], 'andrebriggs/DEPLOY'))
   jobs:
   - job: update_image_tag
     pool:
