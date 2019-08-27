@@ -6,6 +6,7 @@
 trigger:
 - master
 - DEPLOY/*
+- deploy/*
 
 # Don't run against PRs
 pr: none
@@ -32,6 +33,8 @@ stages:
         echo "Build.SourceBranchName: $(Build.SourceBranchName)"
         echo "System.PullRequest.SourceRepositoryURI: $(System.PullRequest.SourceRepositoryURI)"
         echo "System.PullRequest.SourceBranch: $(System.PullRequest.SourceBranch)"
+        echo "Build.Repository.Name: $(Build.Repository.Name)"
+        echo "APP_NAME: $(APP_NAME)"
         pwd
         ls -la 
     - script: |
