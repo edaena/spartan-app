@@ -65,6 +65,15 @@ stages:
         az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) .
       workingDirectory: '$(modulePath)'
       displayName: 'ACR Build and Publish'
+      
+    - script: |
+        echo "some data for the file" >> $(System.DefaultWorkingDirectory)/my_artifact.txt
+      displayName: 'Write out file'
+      
+    - task: PublishPipelineArtifact@1
+      inputs:
+        path: $(System.DefaultWorkingDirectory)/my_artifact.txt
+        artifact: my_artifact
 
 - stage: hld_update
   dependsOn: build
