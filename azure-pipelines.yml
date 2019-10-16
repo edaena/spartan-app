@@ -30,7 +30,7 @@ stages:
     steps:
     - script: | 
         echo "****DEBUG STUFF****"
-        echo "SP_APP_ID : $(CI_Variables.SP_APP_ID)"
+        echo "SP_APP_ID : $(MY_MAPPED_ENV_VAR)"
         echo "Build.SourceBranch: $(Build.SourceBranch)"
         echo "Build.SourceBranchName: $(Build.SourceBranchName)"
         echo "System.PullRequest.SourceRepositoryURI: $(System.PullRequest.SourceRepositoryURI)"
@@ -39,6 +39,8 @@ stages:
         echo "APP_NAME: $(APP_NAME)"
         pwd
         ls -la 
+      env:
+        MY_MAPPED_ENV_VAR: $(CI_Variables.SP_APP_ID)
 
 #     - script: |
 #         mkdir -p '$(GOBIN)'
