@@ -181,6 +181,7 @@ stages:
         tar -xvf hub-linux-amd64-2.12.3.tgz
         cd fabrikate-spartan-cluster
         echo "Attempting to PR"
+        export GITHUB_TOKEN=$(GITHUB_TOKEN)
         ../hub-linux-amd64-2.12.3/bin/hub pull-request -p -m "Automated PR for $(Build.Repository.Name)"
       env:
         GITHUB_TOKEN_VAR: $(GITHUB_TOKEN)
