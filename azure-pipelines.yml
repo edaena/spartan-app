@@ -30,7 +30,7 @@ stages:
     steps:
     - script: | 
         echo "****DEBUG STUFF****"
-        echo "SP_APP_ID : $(env.MY_MAPPED_ENV_VAR)"
+        echo "SP_APP_ID: $(SP_APP_ID)"
         echo "Build.SourceBranch: $(Build.SourceBranch)"
         echo "Build.SourceBranchName: $(Build.SourceBranchName)"
         echo "System.PullRequest.SourceRepositoryURI: $(System.PullRequest.SourceRepositoryURI)"
