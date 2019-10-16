@@ -143,11 +143,12 @@ stages:
         ls -la
         #install_fab
       displayName: 'Download Fabrikate'
+      
 
     - script: |
         function git_connect() {
         pwd
-            git clone https://automated:$(GITHUB_TOKEN)@github.com/andrebriggs/fabrikate-spartan-cluster.git
+            git clone https://automated:$(GITHUB_TOKEN_VAR)@github.com/andrebriggs/fabrikate-spartan-cluster.git
 
             cd fabrikate-spartan-cluster
         }
@@ -169,7 +170,7 @@ stages:
         git commit -m "Updating image tag to $(Build.BuildNumber) for common environment"
 
         echo "GIT PUSH"
-        git push https://$(GITHUB_TOKEN)@github.com/andrebriggs/fabrikate-spartan-cluster.git
+        git push https://$(GITHUB_TOKEN_VAR)@github.com/andrebriggs/fabrikate-spartan-cluster.git
 
         cd ..
         wget https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz
@@ -177,7 +178,8 @@ stages:
         cd fabrikate-spartan-cluster
         echo "Attempting to PR"
         ../hub-linux-amd64-2.12.3/bin/hub pull-request -p -m "Automated PR for $(Build.Repository.Name)"
-
+      env:
+        GITHUB_TOKEN_VAR: $(GITHUB_TOKEN)
 
 - stage: testing_ignore
   dependsOn: hld_update
