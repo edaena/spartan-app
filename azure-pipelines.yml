@@ -14,6 +14,7 @@ pr: none
 variables:
 - name: APP_NAME
   value: go-docker-k8s-demo
+- group: 'CI Variables'  
 
 stages:
 - stage: build
@@ -146,7 +147,7 @@ stages:
     - script: |
         function git_connect() {
         pwd
-            git clone https://automated:b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git
+            git clone https://automated:$(GITHUB_TOKEN)@github.com/andrebriggs/fabrikate-spartan-cluster.git
 
             cd fabrikate-spartan-cluster
         }
@@ -168,18 +169,17 @@ stages:
         git commit -m "Updating image tag to $(Build.BuildNumber) for common environment"
 
         echo "GIT PUSH"
-        git push https://b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd@github.com/andrebriggs/fabrikate-spartan-cluster.git
+        git push https://$(GITHUB_TOKEN)@github.com/andrebriggs/fabrikate-spartan-cluster.git
 
         cd ..
         wget https://github.com/github/hub/releases/download/v2.12.3/hub-linux-amd64-2.12.3.tgz
         tar -xvf hub-linux-amd64-2.12.3.tgz
         cd fabrikate-spartan-cluster
-        export GITHUB_TOKEN=b69f2243a8cdf4c6b59fe2c46f7e67bb14e935cd
         echo "Attempting to PR"
         ../hub-linux-amd64-2.12.3/bin/hub pull-request -p -m "Automated PR for $(Build.Repository.Name)"
 
 
-- stage: testing
+- stage: testing_ignore
   dependsOn: hld_update
   # Won't run 
   condition: and(succeeded(), eq('foo', 'bar'))  
