@@ -89,18 +89,17 @@ stages:
     - script: |
        echo "update hld"
       displayName: "Post build step"
-    
     - bash: |
-    curl $SCRIPT > script.sh
-    chmod +x ./script.sh
-    tag_name="hello-spartan-$(Build.SourceBranchName)-$(Build.BuildId)"
-    commitId=$(Build.SourceVersion)
-    commitId=$(echo "${commitId:0:7}")
-    echo "./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) p1 $(Build.BuildId) imageTag $tag_name commitId $commitId service $(Build.Repository.Name)"
-    ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) p1 $(Build.BuildId) imageTag $tag_name commitId $commitId service $(Build.Repository.Name)
-    displayName: Update manifest pipeline details in CJ db
-    env:
-      SCRIPT: https://raw.githubusercontent.com/samiyaakhtar/spk/686-simply-pipelines/scripts/update_introspection.sh
+        curl $SCRIPT > script.sh
+        chmod +x ./script.sh
+        tag_name="hello-spartan-$(Build.SourceBranchName)-$(Build.BuildId)"
+        commitId=$(Build.SourceVersion)
+        commitId=$(echo "${commitId:0:7}")
+        echo "./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) p1 $(Build.BuildId) imageTag $tag_name commitId $commitId service $(Build.Repository.Name)"
+        ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) p1 $(Build.BuildId) imageTag $tag_name commitId $commitId service $(Build.Repository.Name)
+      displayName: Update manifest pipeline details in CJ db
+      env:
+        SCRIPT: https://raw.githubusercontent.com/samiyaakhtar/spk/686-simply-pipelines/scripts/update_introspection.sh
     - task: Docker@2
       inputs:
         containerRegistry: 'hellorings_acr'
