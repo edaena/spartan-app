@@ -15,6 +15,7 @@ variables:
 - name: APP_NAME
   value: go-docker-k8s-demo
 - group: Container Journey
+- group: 'CI Variables'
 
 stages:
 - stage: build
