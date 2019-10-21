@@ -14,7 +14,6 @@ pr: none
 variables:
 - name: APP_NAME
   value: go-docker-k8s-demo
-- group: 'CI Variables'  
 
 stages:
 - stage: build
