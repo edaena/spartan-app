@@ -14,6 +14,7 @@ pr: none
 variables:
 - name: APP_NAME
   value: go-docker-k8s-demo
+- group: Container Journey
 
 stages:
 - stage: build
@@ -37,10 +38,45 @@ stages:
         echo '##vso[task.prependpath]$(GOBIN)'
         echo '##vso[task.prependpath]$(GOROOT)/bin'
       displayName: 'Set up the Go workspace'
+    
+    - script: |
+        mkdir -p '$(GOBIN)'
+        mkdir -p '$(GOPATH)/pkg'
+        mkdir -p '$(modulePath)'
+        shopt -s extglob
+        shopt -s dotglob
+        mv !(gopath) '$(modulePath)'
+        echo '##vso[task.prependpath]$(GOBIN)'
+        echo '##vso[task.prependpath]$(GOROOT)/bin'
+      displayName: 'Set up the Go workspace'
+
+    - script: |
+        # Login to Azure 
+        echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
+        az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
+      workingDirectory: '$(modulePath)'
+      displayName: 'Azure Login'
+
+    - script: |
+        # go version
+        # # Login to Azure 
+        # echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
+        # az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
+        # Use ACR build task to build and push
+        echo "az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) ."
+        az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) .
+      workingDirectory: '$(modulePath)'
+      displayName: 'ACR Build and Publish'
       
     - script: |
         echo "some data for the file" >> $(System.DefaultWorkingDirectory)/my_artifact.txt
       displayName: 'Write out file'
+      
+    - task: PublishPipelineArtifact@1
+      inputs:
+        path: $(System.DefaultWorkingDirectory)/my_artifact.txt
+        artifact: my_artifact
+    
 
 - stage: post_build
   dependsOn: build
@@ -52,4 +88,5 @@ stages:
     - script: |
        echo "update hld"
       displayName: "Post build step"
+
       
