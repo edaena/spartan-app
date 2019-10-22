@@ -77,10 +77,10 @@ stages:
     - task: Docker@2
       inputs:
         containerRegistry: 'hellorings_acr'
-        repository: 'spartan-app'
+        repository: '$(Build.Repository.Name)'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
-        tags: '$(Build.Repository.Name):$(build.BuildNumber)'
+        tags: '$(build.BuildNumber)'
         workingDirectory:  '$(modulePath)'
       
     - bash: |
