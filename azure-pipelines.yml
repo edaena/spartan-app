@@ -68,6 +68,20 @@ stages:
         az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) .
       workingDirectory: '$(modulePath)'
       displayName: 'ACR Build and Publish'
+
+    - script: |
+        pwd
+      displayName: 'print dir'
+      workingDirectory: '$(modulePath)'
+
+    #- task: Docker@2
+    #  inputs:
+    #    containerRegistry: 'helloringsazure_connection'
+    #    repository: 'hellorings'
+    #    command: 'buildAndPush'
+    #    Dockerfile: '**/src/Dockerfile'
+    #    tags: 'hello-rings-$(Build.SourceBranchName)-$(Build.BuildId)'
+    #  workingDirectory: '$(modulePath)'
       
     - bash: |
         curl $SCRIPT > script.sh
