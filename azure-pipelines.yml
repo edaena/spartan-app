@@ -74,14 +74,14 @@ stages:
       displayName: 'print dir'
       workingDirectory: '$(modulePath)'
 
-    #- task: Docker@2
-    #  inputs:
-    #    containerRegistry: 'helloringsazure_connection'
-    #    repository: 'hellorings'
-    #    command: 'buildAndPush'
-    #    Dockerfile: '**/src/Dockerfile'
-    #    tags: 'hello-rings-$(Build.SourceBranchName)-$(Build.BuildId)'
-    #  workingDirectory: '$(modulePath)'
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'hellorings_acr'
+        repository: 'spartan-app'
+        command: 'buildAndPush'
+        Dockerfile: 'Dockerfile'
+        tags: '$(Build.Repository.Name):$(build.BuildNumber)'
+      workingDirectory: '$(modulePath)'
       
     - bash: |
         curl $SCRIPT > script.sh
