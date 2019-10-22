@@ -190,7 +190,7 @@ stages:
         # Download update storage script
         curl https://raw.githubusercontent.com/samiyaakhtar/spk/686-simply-pipelines/scripts/update_introspection.sh > script.sh
         chmod +x script.sh
-        ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) imageTag $(Build.BuildNumber) p2 $(Build.BuildId) hldCommitId $latest_commit env "DEV"
+        ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) imageTag "$(Build.Repository.Name):$(build.BuildNumber)" p2 $(Build.BuildId) hldCommitId $latest_commit env "DEV"
       env:
         GITHUB_TOKEN_VAR: $(GITHUB_TOKEN)
 
