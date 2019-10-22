@@ -51,31 +51,23 @@ stages:
         echo '##vso[task.prependpath]$(GOROOT)/bin'
       displayName: 'Set up the Go workspace'
 
-    #- script: |
+    - script: |
         # Login to Azure 
-    #    echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
-    #    az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
-    #  workingDirectory: '$(modulePath)'
-    #  displayName: 'Azure Login'
+        echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
+        az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
+      workingDirectory: '$(modulePath)'
+      displayName: 'Azure Login'
 
-    #- script: |
-    #    # go version
-    #    # # Login to Azure 
-    #    # echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
-    #    # az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
-    #    # Use ACR build task to build and push
-    #    echo "az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) ."
-    #    az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) .
-    #  workingDirectory: '$(modulePath)'
-    #  displayName: 'ACR Build and Publish'
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'hellorings_acr'
-        repository: '$(Build.Repository.Name)'
-        command: 'buildAndPush'
-        Dockerfile: 'Dockerfile'
-        tags: '$(Build.Repository.Name):$(build.BuildNumber)'
-      condition: ne(variables['Build.Reason'], 'PullRequest')
+    - script: |
+        # go version
+        # # Login to Azure 
+        # echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
+        # az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
+        # Use ACR build task to build and push
+        echo "az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) ."
+        az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) .
+      workingDirectory: '$(modulePath)'
+      displayName: 'ACR Build and Publish'
       
     - bash: |
         curl $SCRIPT > script.sh
