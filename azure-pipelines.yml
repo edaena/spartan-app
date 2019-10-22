@@ -79,7 +79,7 @@ stages:
         containerRegistry: 'hellorings_acr'
         repository: 'spartan-app'
         command: 'buildAndPush'
-        Dockerfile: 'Dockerfile'
+        Dockerfile: '**/Dockerfile'
         tags: '$(Build.Repository.Name):$(build.BuildNumber)'
         workingDirectory:  '$(modulePath)'
       
