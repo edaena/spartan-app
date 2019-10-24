@@ -123,11 +123,11 @@ stages:
 
         curl https://raw.githubusercontent.com/Microsoft/bedrock/master/gitops/azure-devops/release.sh > release.sh
         chmod +x ./release.sh
-
+        pwd
         . build.sh --source-only
         install_hld
-
-        . release.sh
+        pwd
+        . ../release.sh
 
         latest_commit=$(git rev-parse --short HEAD)
         echo "latest_commit=$latest_commit"
