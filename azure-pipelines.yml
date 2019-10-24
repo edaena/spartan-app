@@ -86,14 +86,14 @@ stages:
       env:
         SCRIPT: https://raw.githubusercontent.com/samiyaakhtar/spk/686-simply-pipelines/scripts/update_introspection.sh
     
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'hellorings_acr'
-        repository: '$(Build.Repository.Name)'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: '$(build.BuildNumber)'
-        workingDirectory:  '$(modulePath)'
+    # - task: Docker@2
+    #   inputs:
+    #     containerRegistry: 'hellorings_acr'
+    #     repository: '$(Build.Repository.Name)'
+    #     command: 'buildAndPush'
+    #     Dockerfile: '**/Dockerfile'
+    #     tags: '$(build.BuildNumber)'
+    #     workingDirectory:  '$(modulePath)'
 
     - script: |
         echo "some data for the file" >> $(System.DefaultWorkingDirectory)/my_artifact.txt
@@ -134,8 +134,7 @@ stages:
         ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) imageTag "$(Build.Repository.Name):$(build.BuildNumber)" p2 $(Build.BuildId) hldCommitId $latest_commit env "DEV"
       env:
         GITHUB_TOKEN_VAR: $(GITHUB_TOKEN)
-        HLD_PATH: https://github.com/edaena/fabrikate-spartan-cluster.git
-        REPO: https://github.com/edaena/spartan-cluster-manifests.git
+        REPO: https://github.com/edaena/fabrikate-spartan-cluster.git
         ACCESS_TOKEN_SECRET: $(ACCESS_TOKEN)
 
 
