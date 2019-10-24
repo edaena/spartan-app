@@ -14,7 +14,7 @@ pr: none
 variables:
 - name: APP_NAME
   value: go-docker-k8s-demo
-- group: Edaena Container Journey
+- group: Container Journey
 - group: Spartan CI Variables
 
 stages:
