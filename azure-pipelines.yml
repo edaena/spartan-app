@@ -51,24 +51,6 @@ stages:
         echo '##vso[task.prependpath]$(GOROOT)/bin'
       displayName: 'Set up the Go workspace'
 
-    #- script: |
-    #    # Login to Azure 
-    #    echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
-    #    az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
-    #  workingDirectory: '$(modulePath)'
-    #  displayName: 'Azure Login'
-
-    #- script: |
-    #    # go version
-    #    # # Login to Azure 
-    #    # echo "az login --service-principal --username $(SP_APP_ID) --password $(SP_PASS) --tenant $(SP_TENANT)"
-    #    # az login --service-principal --username "$(SP_APP_ID)" --password "$(SP_PASS)" --tenant "$(SP_TENANT)"
-    #    # Use ACR build task to build and push
-    #    echo "az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) ."
-    #    az acr build -r $(ACR_NAME) --image $(Build.Repository.Name):$(build.BuildNumber) .
-    #  workingDirectory: '$(modulePath)'
-    #  displayName: 'ACR Build and Publish'
-
     - script: |
         ls
       displayName: 'print dir'
@@ -86,25 +68,14 @@ stages:
       env:
         SCRIPT: https://raw.githubusercontent.com/samiyaakhtar/spk/686-simply-pipelines/scripts/update_introspection.sh
     
-    # - task: Docker@2
-    #   inputs:
-    #     containerRegistry: 'hellorings_acr'
-    #     repository: '$(Build.Repository.Name)'
-    #     command: 'buildAndPush'
-    #     Dockerfile: '**/Dockerfile'
-    #     tags: '$(build.BuildNumber)'
-    #     workingDirectory:  '$(modulePath)'
-
-    - script: |
-        echo "some data for the file" >> $(System.DefaultWorkingDirectory)/my_artifact.txt
-      displayName: 'Write out file'
-      
-    - task: PublishPipelineArtifact@1
+    - task: Docker@2
       inputs:
-        path: $(System.DefaultWorkingDirectory)/my_artifact.txt
-        artifact: my_artifact
-
-
+        containerRegistry: 'hellorings_acr'
+        repository: '$(Build.Repository.Name)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(build.BuildNumber)'
+        workingDirectory:  '$(modulePath)'
 
 
 - stage: hld_update
