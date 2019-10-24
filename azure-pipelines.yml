@@ -14,8 +14,8 @@ pr: none
 variables:
 - name: APP_NAME
   value: go-docker-k8s-demo
-- group: Container Journey
-- group: 'CI Variables'
+- group: Edaena Container Journey
+- group: Spartan CI Variables
 
 stages:
 - stage: build
@@ -74,15 +74,6 @@ stages:
       displayName: 'print dir'
       workingDirectory: '$(modulePath)'
 
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'hellorings_acr'
-        repository: '$(Build.Repository.Name)'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: '$(build.BuildNumber)'
-        workingDirectory:  '$(modulePath)'
-      
     - bash: |
         curl $SCRIPT > script.sh
         chmod +x ./script.sh
@@ -95,6 +86,15 @@ stages:
       env:
         SCRIPT: https://raw.githubusercontent.com/samiyaakhtar/spk/686-simply-pipelines/scripts/update_introspection.sh
     
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'hellorings_acr'
+        repository: '$(Build.Repository.Name)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(build.BuildNumber)'
+        workingDirectory:  '$(modulePath)'
+
     - script: |
         echo "some data for the file" >> $(System.DefaultWorkingDirectory)/my_artifact.txt
       displayName: 'Write out file'
