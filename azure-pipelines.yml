@@ -116,18 +116,14 @@ stages:
       vmImage: 'Ubuntu 16.04'
     steps:
     - script: |
-
         # Download build.sh
         curl https://raw.githubusercontent.com/Microsoft/bedrock/master/gitops/azure-devops/build.sh > build.sh
         chmod +x ./build.sh
-
+        
         curl https://raw.githubusercontent.com/Microsoft/bedrock/master/gitops/azure-devops/release.sh > release.sh
         chmod +x ./release.sh
-        pwd
-        . build.sh --source-only
-        install_hld
-        pwd
-        . ../release.sh
+
+        . release.sh
 
         latest_commit=$(git rev-parse --short HEAD)
         echo "latest_commit=$latest_commit"
@@ -140,6 +136,7 @@ stages:
         GITHUB_TOKEN_VAR: $(GITHUB_TOKEN)
         HLD_PATH: https://github.com/edaena/fabrikate-spartan-cluster.git
         REPO: https://github.com/edaena/spartan-cluster-manifests.git
+        ACCESS_TOKEN_SECRET: $(ACCESS_TOKEN)
 
 
 
