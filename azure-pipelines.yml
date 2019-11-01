@@ -51,11 +51,6 @@ stages:
         echo '##vso[task.prependpath]$(GOROOT)/bin'
       displayName: 'Set up the Go workspace'
 
-    - script: |
-        ls
-      displayName: 'print dir'
-      workingDirectory: '$(modulePath)'
-
     - bash: |
         curl $SCRIPT > script.sh
         chmod +x ./script.sh
