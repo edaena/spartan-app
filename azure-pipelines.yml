@@ -1,7 +1,7 @@
-# Go
-# Build your Go project.
-# Add steps that test, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/go
+# Multi-stage Bedrock Azure Pipeline
+# Stages:
+# 1. src_to_acr: builds the source and pushes a container to acr
+# 2. hld_update: updates the hld repo with the new container image
 
 trigger:
 - master
@@ -18,7 +18,7 @@ variables:
 - group: Spartan CI Variables
 
 stages:
-- stage: build
+- stage: src_to_acr
   jobs:
   - job: "run_build_push_acr"
     pool:
@@ -102,37 +102,8 @@ stages:
         # Download update storage script
         curl https://raw.githubusercontent.com/edaena/spk/master/scripts/update_introspection.sh > script.sh
         chmod +x script.sh
-        ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) imageTag "$(Build.Repository.Name):$(build.BuildNumber)" p2 $(Build.BuildId) hldCommitId $latest_commit env "DEV" isMultiStage true
+        ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) imageTag "$(Build.Repository.Name):$(build.BuildNumber)" p2 $(Build.BuildId) hldCommitId $latest_commit env "DEV"
       env:
         GITHUB_TOKEN_VAR: $(GITHUB_TOKEN)
         REPO: https://github.com/edaena/fabrikate-spartan-cluster.git
         ACCESS_TOKEN_SECRET: $(ACCESS_TOKEN)
-
-
-- stage: manifest_generation
-  dependsOn: hld_update
-  condition: and(succeeded('hld_update'), or(startsWith(variables['Build.SourceBranch'], 'refs/heads/DEPLOY/'),eq(variables['Build.SourceBranchName'],'master')))
-  jobs:
-  - job: generate
-    pool:
-      vmImage: 'Ubuntu 16.04'
-    steps:
-    - script: |
-        # Download build.sh
-        curl https://raw.githubusercontent.com/Microsoft/bedrock/master/gitops/azure-devops/build.sh > build.sh
-        chmod +x ./build.sh
-        . build.sh
-
-        # Download update storage script
-        curl https://raw.githubusercontent.com/samiyaakhtar/spk/686-simply-pipelines/scripts/update_introspection.sh > script.sh
-        chmod +x script.sh
-        latest_commit=$(git rev-parse --short HEAD)
-        ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) p2 $(Build.BuildId) p3 $(Build.BuildId) manifestCommitId $latest_commit
-
-      env:
-        GITHUB_TOKEN_VAR: $(GITHUB_TOKEN)
-        HLD_PATH: https://github.com/edaena/fabrikate-spartan-cluster.git
-        REPO: https://github.com/edaena/spartan-cluster-manifests.git
-        ACCESS_TOKEN_SECRET: $(ACCESS_TOKEN)
-
-
