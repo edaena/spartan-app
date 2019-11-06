@@ -76,7 +76,7 @@ stages:
 
 
 - stage: hld_update
-  dependsOn: build
+  dependsOn: src_to_acr
   condition: and(succeeded('build'), or(startsWith(variables['Build.SourceBranch'], 'refs/heads/DEPLOY/'),eq(variables['Build.SourceBranchName'],'master')))
   jobs:
   - job: update_image_tag
