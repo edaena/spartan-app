@@ -52,13 +52,15 @@ stages:
       displayName: 'Set up the Go workspace'
 
     - bash: |
-        curl $SCRIPT > script.sh
-        chmod +x ./script.sh
         tag_name="$(Build.Repository.Name):$(build.BuildNumber)"
         commitId=$(Build.SourceVersion)
         commitId=$(echo "${commitId:0:7}")
-        echo "./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) p1 $(Build.BuildId) imageTag $tag_name commitId $commitId service $(Build.Repository.Name)"
-        ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) p1 $(Build.BuildId) imageTag $tag_name commitId $commitId service $(Build.Repository.Name)
+        service=$(Build.Repository.Name)
+        service=${service##*/}
+        VERSION_TO_DOWNLOAD=$(curl -s "https://api.github.com/repos/CatalystCode/spk/releases/latest" | grep "tag_name" | sed -E 's/.*"([^"]+)".*/\1/')
+        echo "Downloading SPK version $VERSION_TO_DOWNLOAD" && wget "https://github.com/CatalystCode/spk/releases/download/$VERSION_TO_DOWNLOAD/spk-linux"
+        chmod +x ./spk-linux
+        ./spk-linux deployment create -n $(ACCOUNT_NAME) -k $(ACCOUNT_KEY) -t $(TABLE_NAME) -p $(PARTITION_KEY) --p1 $(Build.BuildId) --image-tag $tag_name --commit-id $commitId --service $service
       displayName: Update manifest pipeline details in CJ db
       env:
         SCRIPT: https://raw.githubusercontent.com/samiyaakhtar/spk/686-simply-pipelines/scripts/update_introspection.sh
@@ -82,22 +84,12 @@ stages:
       vmImage: 'Ubuntu 16.04'
     steps:
     - script: |
-        # Download build.sh
-        curl https://raw.githubusercontent.com/Microsoft/bedrock/master/gitops/azure-devops/build.sh > build.sh
-        chmod +x ./build.sh
-        
-        curl https://raw.githubusercontent.com/Microsoft/bedrock/master/gitops/azure-devops/release.sh > release.sh
-        chmod +x ./release.sh
-
-        . release.sh
-
         latest_commit=$(git rev-parse --short HEAD)
-        echo "latest_commit=$latest_commit"
-
-        # Download update storage script
-        curl https://raw.githubusercontent.com/edaena/spk/master/scripts/update_introspection.sh > script.sh
-        chmod +x script.sh
-        ./script.sh $(ACCOUNT_NAME) $(ACCOUNT_KEY) $(TABLE_NAME) $(PARTITION_KEY) imageTag "$(Build.Repository.Name):$(build.BuildNumber)" p2 $(Build.BuildId) hldCommitId $latest_commit env "DEV"
+        tag_name=$(Build.BuildId)
+        VERSION_TO_DOWNLOAD=$(curl -s "https://api.github.com/repos/CatalystCode/spk/releases/latest" | grep "tag_name" | sed -E 's/.*"([^"]+)".*/\1/') 
+        echo "Downloading SPK version $VERSION_TO_DOWNLOAD" && wget "https://github.com/CatalystCode/spk/releases/download/$VERSION_TO_DOWNLOAD/spk-linux"
+        chmod +x ./spk-linux
+        ./spk-linux deployment create  -n $(ACCOUNT_NAME) -k $(ACCOUNT_KEY) -t $(TABLE_NAME) -p $(PARTITION_KEY)  --p2 $(Build.BuildId) --hld-commit-id $latest_commit --env $(Build.SourceBranchName) --image-tag $tag_name
       env:
         GITHUB_TOKEN_VAR: $(GITHUB_TOKEN)
         REPO: https://github.com/edaena/fabrikate-spartan-cluster.git
