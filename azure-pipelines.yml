@@ -8,6 +8,13 @@ trigger:
 - DEPLOY/*
 - deploy/*
 
+schedules:
+- cron: "0 0 * * *"
+  displayName: Daily midnight build
+  branches:
+    include:
+    - master
+
 # Don't run against PRs
 pr: none
 
