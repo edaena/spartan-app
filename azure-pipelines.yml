@@ -84,7 +84,6 @@ stages:
 
 - stage: hld_update
   dependsOn: src_to_acr
-  condition: succeeded('build')
   jobs:
   - job: update_image_tag
     pool:
